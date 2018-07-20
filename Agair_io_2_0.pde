@@ -32,7 +32,7 @@ void setup(){
 void makeDots(){
   // makes dots to fill the world
   float area = worldSizeX * worldSizeY;
-  for (int i = 0; i < area/2000; i++){
+  for (int i = 0; i < area/4000; i++){
     addNewRandomPoint();
   }
 }
@@ -50,12 +50,13 @@ void draw(){
   calulateSize();
   drawWorld();
   addNewRandomPoint();
+  showScore();
 }
 
 void calulateSize(){
   // works out size and speed based on mass
   size = sqrt(mass / PI);
-  speed = 40 / size;
+  speed = 20 / sqrt(size);
 }
 
 void drawWorld(){
@@ -103,6 +104,11 @@ void eatCheck(){
   for (float[] food : foodsToRemove){
     foods.remove(food);
   }
+}
+void showScore(){
+  textSize(20);
+  fill(0, 102, 153);
+  text("Score: " + mass / 400, 10, height - 10); 
 }
 // not in use
 void testKeys() {
