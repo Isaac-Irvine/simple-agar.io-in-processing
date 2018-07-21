@@ -3,8 +3,9 @@ int worldSizeX = 10000;
 int worldSizeY = 10000;
 
 // screen res and center
-int screenX = 600;
-int screenY = 400;
+// must be updated in setup as well
+int screenX = 1000;
+int screenY = 600;
 int centerX = screenX / 2;
 int centerY = screenY / 2;
 
@@ -26,7 +27,7 @@ ArrayList<float[]> foods = new ArrayList();
 void setup(){
   x = worldSizeX / 2;
   y = worldSizeY / 2;
-  size(600, 400);
+  size(1000, 600);
   makeDots();
 }
 void makeDots(){
@@ -64,7 +65,21 @@ void drawWorld(){
   // world relitive to screen. this keeps the ball in the center of the screen
   worldX = -x + centerX;
   worldY = -y + centerY;
+  stroke(255,0,0);
   rect(worldX, worldY, worldSizeX, worldSizeY);
+  
+  // draw grid
+  float offsetX = worldX + x - width/2;
+  float offsetY = worldY + y - height/2;
+  offsetX = round(offsetX / 40) * 40;
+  offsetY = round(offsetY / 40) * 40;
+  stroke(0);
+  //for (float x = offsetX; x < width; x += 40){
+  //  line(x,0,x, width);
+  //}
+  //for (float y = offsetY; y < height; y += 40){
+  //  line(0,y,height, y);
+  //;}
   
   // draw the food
   stroke(0);
@@ -83,8 +98,30 @@ void move(){
   // works out angle of mouse relitive to ball
   float angle = 0;
   angle = atan2(worldY + y - mouseY, worldX + x - mouseX);
-  y -= sin(angle) * speed;
-  x -= cos(angle) * speed;
+  
+  x += -cos(angle) * speed;
+  y += -sin(angle) * speed;
+  
+  
+  // make sure you cant go off the end of the world
+  if (x - size/2 < 0){
+    x = size/2;
+  }
+  if (x + size/2 > worldSizeX){
+   x =  worldSizeX - size/2;
+  }
+  if (y - size/2 < 0){
+    y = size/2;
+  }
+  if (y + size/2 > worldSizeY){
+    y = worldSizeY - size/2;
+  }
+  
+  // if ball is bigger than world
+  if (size >= min(worldSizeX, worldSizeY)){
+    println("wtf!!");
+    size = min(worldSizeX, worldSizeY) - 1;
+  }
 }
 
 void eatCheck(){
