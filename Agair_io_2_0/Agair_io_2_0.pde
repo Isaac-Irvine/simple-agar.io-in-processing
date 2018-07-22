@@ -69,17 +69,15 @@ void drawWorld(){
   rect(worldX, worldY, worldSizeX, worldSizeY);
   
   // draw grid
-  float offsetX = worldX + x - width/2;
-  float offsetY = worldY + y - height/2;
-  offsetX = round(offsetX / 40) * 40;
-  offsetY = round(offsetY / 40) * 40;
-  stroke(0);
-  //for (float x = offsetX; x < width; x += 40){
-  //  line(x,0,x, width);
-  //}
-  //for (float y = offsetY; y < height; y += 40){
-  //  line(0,y,height, y);
-  //;}
+  float offsetX = (worldX % 40) - width/2;
+  float offsetY = (worldY % 40) - height/2;
+  stroke(200);
+  for (float x = offsetX; x < width; x += 40){
+    line(x,0,x, height);
+  }
+  for (float y = offsetY; y < height; y += 40){
+    line(0,y,width, y);
+  }
   
   // draw the food
   stroke(0);
