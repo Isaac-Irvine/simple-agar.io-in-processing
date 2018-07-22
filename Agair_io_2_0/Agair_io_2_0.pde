@@ -24,6 +24,9 @@ float worldX, worldY;
 // 0: x, 1: y, 2: r, 3: g, 4: b.
 ArrayList<float[]> foods = new ArrayList();
 
+// players ball
+Ball ball1 = new Ball();
+
 void setup(){
   x = worldSizeX / 2;
   y = worldSizeY / 2;
@@ -46,25 +49,21 @@ void draw(){
   // runs every frame
   background(0);
   //testKeys();
-  move();
-  eatCheck();
-  calulateSize();
+  
+  ball1.moveToMouse();
+  ball1.eatCheck();
   drawWorld();
+  ball1.drawBall();
   addNewRandomPoint();
   showScore();
 }
 
-void calulateSize(){
-  // works out size and speed based on mass
-  size = sqrt(mass / PI);
-  speed = 20 / sqrt(size);
-}
 
 void drawWorld(){
   fill(255);
   // world relitive to screen. this keeps the ball in the center of the screen
-  worldX = -x + centerX;
-  worldY = -y + centerY;
+  worldX = -ball1.x + centerX;
+  worldY = -ball1.y + centerY;
   stroke(255,0,0);
   rect(worldX, worldY, worldSizeX, worldSizeY);
   
@@ -88,63 +87,14 @@ void drawWorld(){
       ellipse(food[0] + worldX, food[1] + worldY, 10, 10);
     }
   }
-  /// draws ball
-  fill(255,128,128);
-  ellipse(worldX + x, worldY + y, size, size);
-}
-void move(){
-  // works out angle of mouse relitive to ball
-  float angle = 0;
-  angle = atan2(worldY + y - mouseY, worldX + x - mouseX);
-  
-  x += -cos(angle) * speed;
-  y += -sin(angle) * speed;
-  
-  
-  // make sure you cant go off the end of the world
-  if (x - size/2 < 0){
-    x = size/2;
-  }
-  if (x + size/2 > worldSizeX){
-   x =  worldSizeX - size/2;
-  }
-  if (y - size/2 < 0){
-    y = size/2;
-  }
-  if (y + size/2 > worldSizeY){
-    y = worldSizeY - size/2;
-  }
-  
-  // if ball is bigger than world
-  if (size >= min(worldSizeX, worldSizeY)){
-    println("wtf!!");
-    size = min(worldSizeX, worldSizeY) - 1;
-  }
 }
 
-void eatCheck(){
-  // checks if ball is on food, if so it eats it
-  
-  // food that needs to be removed from list
-  ArrayList<float[]> foodsToRemove = new ArrayList();
-  
-  for (float[] food : foods){
-    // if ball covers center of food
-    if (sq(food[0] - x) + sq(food[1] - y) < sq(size/2)){
-      foodsToRemove.add(food);
-      mass += 400;
-    }
-  }
-  // remove all the eaten food
-  for (float[] food : foodsToRemove){
-    foods.remove(food);
-  }
-}
 void showScore(){
   textSize(20);
   fill(0, 102, 153);
-  text("Score: " + mass / 400, 10, height - 10); 
+  text("Score: " + ball1.score, 10, height - 10); 
 }
+
 // not in use
 void testKeys() {
   if(keyPressed){
@@ -154,6 +104,99 @@ void testKeys() {
       } else if (keyCode == DOWN) {
         y -= 10;
       }
+    }
+  }
+}
+
+
+class Ball{
+  int[] ballColor = {0,0,0};
+  // starting mass (area) of ball
+  int mass = 400;
+  // size (radius) of ball. recaulated every time mass changes
+  float size;
+  // speed
+  float speed;
+  float score;
+  
+  // ball postion
+  float x, y;
+  Ball(){
+    // generate random color
+    for (int c = 0; c < 3; c++) ballColor[c] = (int)random(50,255);
+    // calulate size and speed
+    addMass(0);
+    x = worldSizeX / 2;
+    y = worldSizeY / 2;
+  }
+  void addMass(float amount){
+    this.mass += amount;
+    // works out size and speed based on mass
+    this.size = sqrt(mass / PI);
+    this.speed = 20 / sqrt(size);
+    this.score = round(this.mass / 400);
+  }
+  void moveToMouse(){
+    // works out angle of mouse relitive to ball
+    float angle = 0;
+    angle = atan2(worldY + y - mouseY, worldX + x - mouseX);
+    
+    x += -cos(angle) * speed;
+    y += -sin(angle) * speed;
+    
+    
+    // make sure you cant go off the end of the world
+    if (x - size/2 < 0){
+      x = size/2;
+    }
+    if (x + size/2 > worldSizeX){
+     x =  worldSizeX - size/2;
+    }
+    if (y - size/2 < 0){
+      y = size/2;
+    }
+    if (y + size/2 > worldSizeY){
+      y = worldSizeY - size/2;
+    }
+    
+    // if ball is bigger than world
+    if (size >= min(worldSizeX, worldSizeY)){
+      println("wtf!!");
+      size = min(worldSizeX, worldSizeY) - 1;
+    }
+  }
+  void eatCheck(){
+    // checks if ball is on food, if so it eats it
+    
+    // food that needs to be removed from list
+    ArrayList<float[]> foodsToRemove = new ArrayList();
+    
+    for (float[] food : foods){
+      // if ball covers center of food
+      if (sq(food[0] - x) + sq(food[1] - y) < sq(size/2)){
+        foodsToRemove.add(food);
+        this.addMass(400);
+      }
+    }
+    // remove all the eaten food
+    for (float[] food : foodsToRemove){
+      foods.remove(food);
+    }
+  }
+  void drawBall(){
+    /// draws ball
+    if(onScreen()){
+      fill(ballColor[0],ballColor[1],ballColor[2]);
+      ellipse(worldX + x, worldY + y, size, size);
+    }
+  }
+  boolean onScreen(){
+    // is the ball visable on the screen
+    if(worldX + x - size >= 0 && worldX + x + size < width && worldY + y - size >= 0 && worldY + y + size < height){
+      return true;
+    }
+    else {
+      return false;
     }
   }
 }
