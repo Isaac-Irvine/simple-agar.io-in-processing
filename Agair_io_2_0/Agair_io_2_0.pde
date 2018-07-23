@@ -126,8 +126,8 @@ class Ball{
     for (int c = 0; c < 3; c++) ballColor[c] = (int)random(50,255);
     // calulate size and speed
     addMass(0);
-    x = worldSizeX / 2;
-    y = worldSizeY / 2;
+    x = random(worldSizeX);
+    y = random(worldSizeY);
   }
   void addMass(float amount){
     this.mass += amount;
@@ -192,7 +192,7 @@ class Ball{
   }
   boolean onScreen(){
     // is the ball visable on the screen
-    if(worldX + x - size >= 0 && worldX + x + size < width && worldY + y - size >= 0 && worldY + y + size < height){
+    if(worldX + x + size >= 0 && worldX + x - size < width && worldY + y + size >= 0 && worldY + y - size < height){
       return true;
     }
     else {
