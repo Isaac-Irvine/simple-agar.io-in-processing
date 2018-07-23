@@ -1,3 +1,5 @@
+// client
+
 // size of world
 int worldSizeX = 10000;
 int worldSizeY = 10000;
