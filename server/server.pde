@@ -3,7 +3,7 @@
 
 // askTypes
 // "wantWorld" -- is new to the server and wants a copy of the world
-// "eaten" and sent foodID -- the food eaten
+// "eatenFood" and sent foodID -- the food eaten
 // "eatBall" and sent ballID -- ball eaten
 // "movedTo" and sent ballID, newX and newY -- where the ball is now 
 // "sizeChange" and sent ballID and newMass -- the mass of the ball
@@ -27,33 +27,52 @@ float worldX, worldY;
 ArrayList<float[]> foods = new ArrayList();
 
 
-Server myServer;
+Server theServer;
 
 void setup() {
   size(200, 200);
   // Starts a myServer on port 5204
-  myServer = new Server(this, 5204); 
+  theServer = new Server(this, 5204); 
   makeDots();
 }
 
 void draw() {
   // Get the next available client
-  Client thisClient = myServer.available();
+  Client thisClient = theServer.available();
   // If the client is not null, and says something, display what it said
   if (thisClient !=null) {
     XML whatClientSaid = parseXML(thisClient.readString());
+    // making blank
     XML reply = parseXML("<nothing></nothing>");
     if (whatClientSaid != null) {
       String askingFor = whatClientSaid.getString("askType");
       if (askingFor == "wantWorld") {
         reply.setString("replayType", "worldData");
         reply = getWorldSummery(reply);
-        thisClient.write(reply.toString());
-      } else if(askingFor == "eatenBall"){
-        
+      } else if(askingFor == "eatenFood"){
+      
+      } else if (askingFor == "eatBall"){
+      
+      } else if (askingFor == "movedTo"){
+      
+      } else if (askingFor == "sizeChange"){
+      
+      } else if (askingFor == "newBall"){
+      
+      } else if (askingFor == "leaving"){
+      
       }
+      thisClient.write(reply.toString());
     }
   }
+  
+  // updates
+  XML update = getUpdates();
+  theServer.write(update.toString());
+}
+
+XML getUpdates(){
+  return parseXML("<nothing></nothing>");
 }
 
 XML getWorldSummery(XML theXML) {

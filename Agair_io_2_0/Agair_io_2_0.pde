@@ -94,7 +94,7 @@ void drawWorld(){
 void showScore(){
   textSize(20);
   fill(0, 102, 153);
-  text("Score: " + ball1.score, 10, height - 10); 
+  text("Score: " + (int)ball1.score, 10, height - 10); 
 }
 
 // not in use
