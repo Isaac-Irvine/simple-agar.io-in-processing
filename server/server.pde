@@ -1,5 +1,14 @@
 // server
 
+
+// commands
+// "new" -- is new to the server and wants a copy of the world
+// "eat [foodID]" -- the food eaten
+// "eatBall [ballID]" -- ball eaten
+// "move [ballID] [x] [y]" where the ball is now 
+// "size [ballID][mass]" the mass of the ball
+// "newBall [mass] [x] [y]" new ball made, wants ID assigned
+
 import processing.net.*;
 
 // size of world
@@ -9,7 +18,7 @@ int worldSizeY = 10000;
 // where the top left of the world is relitive to the screen
 float worldX, worldY;
 
-// 0: x, 1: y, 2: r, 3: g, 4: b.
+// 0: x, 1: y,
 ArrayList<float[]> foods = new ArrayList();
 
 
