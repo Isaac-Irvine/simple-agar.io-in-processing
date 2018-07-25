@@ -30,9 +30,10 @@ ArrayList<float[]> foods = new ArrayList();
 Server theServer;
 
 void setup() {
+  println("Starting");
   size(200, 200);
   // Starts a myServer on port 5204
-  theServer = new Server(this, 5204); 
+  theServer = new Server(this, 8888); 
   makeDots();
 }
 
@@ -46,7 +47,9 @@ void draw() {
     XML reply = parseXML("<nothing></nothing>");
     if (whatClientSaid != null) {
       String askingFor = whatClientSaid.getString("askType");
-      if (askingFor == "wantWorld") {
+      println(askingFor);
+      if (askingFor.equals("wantWorld")) {
+        println("giving World");
         reply.setString("replayType", "worldData");
         reply = getWorldSummery(reply);
       } else if(askingFor == "eatenFood"){
@@ -62,7 +65,9 @@ void draw() {
       } else if (askingFor == "leaving"){
       
       }
-      thisClient.write(reply.toString());
+      String replyToSend = reply.toString();
+      replyToSend += "{__ The End __}";
+      thisClient.write(replyToSend);
     }
   }
   
